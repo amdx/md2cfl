@@ -1,0 +1,79 @@
+<ac:layout-section ac:type="single">
+    <ac:layout-cell>
+        <ac:structured-macro ac:macro-id="68d3756c-c886-411e-aa15-126efc3dcb5b" ac:name="scroll-ignore" ac:schema-version="1">
+            <ac:rich-text-body>
+                <ac:structured-macro ac:macro-id="57071251-e3c9-4900-8c34-d2cba82b2231" ac:name="note" ac:schema-version="1">
+                    <ac:rich-text-body>This page is automatically generated and maintained by <strong>Magicdraw</strong>.</ac:rich-text-body>
+                </ac:structured-macro>
+            </ac:rich-text-body>
+        </ac:structured-macro>
+    </ac:layout-cell>
+</ac:layout-section>
+
+<ac:layout>
+    <ac:layout-section ac:type="two_right_sidebar">
+        <ac:layout-cell>
+            {% if pagedata.documentation %}
+          		<h2 class="auto-cursor-target">Documentation</h2>
+      			<p>{{ pagedata.documentation }}</p>
+            {% endif %}
+      	</ac:layout-cell>
+        <ac:layout-cell>
+            <p>
+                <ac:structured-macro ac:name="toc" ac:schema-version="1"
+                                     ac:macro-id="0b57ec9e-8041-4120-ae16-78ff9829757a"/>
+            </p>
+        </ac:layout-cell>
+    </ac:layout-section>
+
+<ac:layout-section ac:type="single">
+
+{% for diagram in pagedata.diagrams %}
+        <ac:layout-cell>
+            <h2>{{ diagram.name|e }} / {{ diagram.type|e }}</h2>
+            {% if diagram.documentation %}
+            <p>Documentation: {{ diagram.documentation|e }}</p>
+            {% endif %}
+            <p>
+                <ac:image>
+                    <ri:attachment ri:filename="{{ diagram.image | basename }}"/>
+                </ac:image>
+            </p>
+          	<p>
+            Author: {{ diagram.author|e }}, Creation date: {{ diagram.creationDate|e }}, Last modified: {{ diagram.lastModifiedBy|e }} ({{ diagram.lastModifiedDate|e }})
+            </p>
+            <ac:structured-macro ac:macro-id="5f3e860a-233d-4934-8890-754c2fc71c1b" ac:name="html" ac:schema-version="1">
+                <ac:plain-text-body><![CDATA[<a href="{{ diagram.elementUrl }}">{{ diagram.qualifiedName }}</a>]]></ac:plain-text-body>
+            </ac:structured-macro>
+        </ac:layout-cell>
+{% endfor %}
+
+    </ac:layout-section>
+
+    <ac:layout-section ac:type="single">
+        <ac:structured-macro ac:macro-id="68d3756c-c886-411e-aa15-126efc3dcb5b" ac:name="scroll-ignore" ac:schema-version="1">
+            <ac:rich-text-body>
+                <ac:layout-cell>
+                    <p class="auto-cursor-target"><br/></p>
+                    <ac:structured-macro ac:name="expand" ac:schema-version="1" ac:macro-id="8fc6c4a9-3689-4be4-97d1-3206c6e5c86f">
+                        <ac:parameter ac:name="title">Attachments</ac:parameter>
+                        <ac:rich-text-body>
+                            <p>
+                                <ac:structured-macro ac:name="attachments" ac:schema-version="1" ac:macro-id="54ddcf85-4643-4117-a745-9c8b902efc28">
+                                    <ac:parameter ac:name="upload">false</ac:parameter>
+                                </ac:structured-macro>
+                            </p>
+                        </ac:rich-text-body>
+                    </ac:structured-macro>
+                    <p><br/></p>
+                    <p><br/></p>
+                </ac:layout-cell>
+                <ac:layout-cell>
+                    <strong style="font-size: 8.0pt;">Schema version v{{ version_info.version }}/s{{
+                        version_info.stepping }} $hash={{ hash }}</strong>
+                </ac:layout-cell>
+            </ac:rich-text-body>
+        </ac:structured-macro>
+    </ac:layout-section>
+
+</ac:layout>

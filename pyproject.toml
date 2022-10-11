@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "md2cfl"
+version = "1.0.0"
+description = "NoMagic/CATIA MagicDraw to Atlassian Confluence importer"
+authors = ["Marco Fagiolini <mfx@amdx.de>"]
+license = "AGPL-3.0-or-later"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+python-dateutil = "^2.8.2"
+requests = "^2.28.1"
+Jinja2 = "^3.1.2"
+progress = "^1.6"
+lxml = "^4.9.1"
+keyring = "^23.9.3"
+
+[tool.poetry.dev-dependencies]
+flake8 = "^5.0.4"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+md2cfl = 'md2cfl.__main__:main'

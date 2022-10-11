@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <xs:simpleType name="nonempty_string">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:element name="report" type="report_t"/>
+
+    <xs:complexType name="report_t">
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="rootpage" type="rootpage_t"/>
+        </xs:choice>
+        <xs:attribute name="version" type="xs:int" fixed="3"/>
+        <xs:attribute name="stepping" type="xs:int" fixed="2"/>
+    </xs:complexType>
+
+    <xs:complexType name="rootpage_t">
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="pageid" type="xs:int"/>
+            <xs:element name="pagedata" type="pagedata_t"/>
+            <xs:element name="subpages" type="subpages_t"/>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="documentation_t">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="html" type="xs:boolean"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="pagedata_t">
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="name" type="nonempty_string"/>
+            <xs:element name="qualifiedName" type="xs:string"/>
+            <xs:element name="documentation" type="documentation_t"/>
+            <xs:element name="elementid" type="xs:string"/>
+            <xs:element name="stereotypes" type="stereotypes_t"/>
+            <xs:element name="diagrams" type="diagrams_t"/>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="stereotypes_t">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="stereotype" type="xs:string"/>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="diagrams_t">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="diagram" type="diagram_t"/>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="subpages_t">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="subpage" type="subpage_t"/>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="subpage_t">
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="pagedata" type="pagedata_t"/>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="diagram_t">
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="name" type="nonempty_string"/>
+            <xs:element name="qualifiedName" type="xs:string"/>
+            <xs:element name="type" type="xs:string"/>
+            <xs:element name="documentation" type="documentation_t"/>
+            <xs:element name="elementUrl" type="xs:string"/>
+            <xs:element name="author" type="xs:string"/>
+            <xs:element name="creationDate" type="xs:string"/>
+            <xs:element name="lastModifiedDate" type="xs:string"/>
+            <xs:element name="lastModifiedBy" type="xs:string"/>
+            <xs:element name="image" type="xs:string"/>
+        </xs:choice>
+    </xs:complexType>
+</xs:schema>

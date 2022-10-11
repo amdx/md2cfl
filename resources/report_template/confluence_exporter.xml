@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+#import("query", "com.nomagic.reportwizard.tools.QueryTool")
+#import("dialog","com.nomagic.reportwizard.tools.DialogTool")
+#import("text", "com.nomagic.reportwizard.tools.TextTool")
+
+#set($publish_packages = $array.createHashSet())
+#set($missingpageid_packages = $array.createHashSet())
+#set($noname_packages = $array.createHashSet())
+
+#foreach ($pkg in $SmartPackage)
+	#if ($report.containsStereotype($pkg, 'Publish'))
+		#set ($void = $publish_packages.add($pkg))
+	#end
+#end
+
+#macro(docentry $element)
+	<documentation html="#if ($text.getPureText($element.documentation) != $element.documentation)true#{else}false#end">$element.documentation</documentation>
+#end
+
+#macro(pagedata $pkg)
+<pagedata>
+	<name>$pkg.name</name>
+	<qualifiedName>$pkg.qualifiedName</qualifiedName>
+	#docentry($pkg)
+	<elementid>$pkg.elementID</elementid>
+	<stereotypes>
+		#foreach ($st in $pkg.appliedStereotype)
+			#if ($st.name != 'SmartPackage' && $st.name != 'Publish')
+			<stereotype>$st.name</stereotype>
+			#end
+		#end
+	</stereotypes>
+	<diagrams>
+	#foreach ($diag in $query.get("#$pkg.elementID > diagram"))
+		#if ($diag.elementType == 'diagram')
+		<diagram>
+			<name>$diag.name</name>
+			<qualifiedName>$diag.qualifiedName</qualifiedName>
+			<type>$diag.diagramType</type>
+			#docentry($diag)
+			<elementUrl>$diag.elementURL</elementUrl>
+			<author>$report.getStereotypeProperty($diag, 'DiagramInfo', 'Author')[0]</author>
+			<creationDate>$report.getStereotypeProperty($diag, 'DiagramInfo', 'Creation date')[0]</creationDate>
+			<lastModifiedDate>#if ($report.getStereotypeProperty($diag, 'DiagramInfo', 'Modification date').size() > 0)$report.getStereotypeProperty($diag, 'DiagramInfo', 'Modification date')[0]#{else}N/A#end</lastModifiedDate>
+			<lastModifiedBy>#if ($report.getStereotypeProperty($diag, 'DiagramInfo', 'Last modified by').size() > 0)$report.getStereotypeProperty($diag, 'DiagramInfo', 'Last modified by')[0]#{else}N/A#end</lastModifiedBy>
+			<image>$diag.image</image>
+		</diagram>
+		#end
+	#end
+	</diagrams>
+</pagedata>
+#end
+
+<report version="3" stepping="2">
+#foreach ($top_package in $publish_packages)
+	#set($cfl_pageid_entries = $report.getStereotypeProperty($top_package, 'Publish', 'CFL Page ID'))
+	#if ($cfl_pageid_entries.isEmpty())
+		#set ($void = $missingpageid_packages.add($top_package.name))
+	#else
+		<rootpage>
+			<pageid>$cfl_pageid_entries[0]</pageid>
+			#pagedata($top_package)
+			<subpages>
+			#foreach ($pkg in $query.get("#$top_package.elementID smartpackage"))
+				#if ($pkg.name.isEmpty())
+					#set ($void = $noname_packages.add($top_package.qualifiedName))
+				#end
+				<subpage>
+				#pagedata($pkg)
+				</subpage>
+			#end
+			</subpages>
+		</rootpage>
+	#end
+#end
+</report>
+
+#if (!$missingpageid_packages.isEmpty())
+	$dialog.message("Warning: the following packages haven't been exported since they're missing the required page_id: $missingpageid_packages")
+#end
+
+#if (!$noname_packages.isEmpty())
+	$dialog.message("Error: the following packages have empty names: $noname_packages")
+#end
